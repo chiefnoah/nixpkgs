@@ -34,8 +34,7 @@ stdenv.mkDerivation rec {
     gambit_stamp_ymd=${gambit-stampYmd}
     gambit_stamp_hms=${gambit-stampHms}
     EOF
-    for f in src/bootstrap/gerbil/compiler/driver__0.scm \
-             src/build/build-libgerbil.ss \
+    for f in src/build/build-libgerbil.ss \
              src/gerbil/compiler/driver.ss ; do
       substituteInPlace "$f" --replace '"gcc"' '"${gccStdenv.cc}/bin/${gccStdenv.cc.targetPrefix}gcc"' ;
     done
@@ -93,10 +92,6 @@ stdenv.mkDerivation rec {
     # Build, replacing make by build.sh
     ( cd src && sh build.sh )
 
-    f=build/lib/libgerbil.so.ldd ; [ -f $f ] && :
-    substituteInPlace "$f" --replace '(' \
-      '(${lib.strings.concatStrings (map (x: "\"${x}\" " ) extraLdOptions)}'
-
     runHook postBuild
   '';
 
@@ -115,7 +110,7 @@ stdenv.mkDerivation rec {
 
   meta = {
     description = "Gerbil Scheme";
-    homepage    = "https://github.com/vyzo/gerbil";
+    homepage    = "https://github.com/mightygerbils/gerbil";
     license     = lib.licenses.lgpl21Only; # dual, also asl20, like Gambit
     # NB regarding platforms: regularly tested on Linux and on macOS.
     # Please report success and/or failure to fare.
